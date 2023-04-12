@@ -1,0 +1,3 @@
+CREATE DATABASE capstoneDB;
+CREATE USER capuser WITH PASSWORD 'capstone';
+GRANT ALL PRIVILEGES ON DATABASE capstoneDB TO capuser;
