@@ -1,23 +1,31 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Food
 
-class UsersSerializer(serializers.HyperlinkedModelSerializer):
-    # food = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all()) haveto make it a key in the model for user
-
+class UsersSerializer(serializers.ModelSerializer):
     class Meta:
-       model = User
-       fields = ('id', 'username', 'password', 'email', 'name', 'weight')
+        model = User
+        fields = ['id', 'name', 'email', 'password','weight']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 
+    def create(self, validated_data):
+        password = validated_data.pop('password', None)
+        instance = self.Meta.model(**validated_data)
+        if password is not None:
+            instance.set_password(password)
+        instance.save()
+        return instance
 
-class Fooderializer(serializers.HyperlinkedModelSerializer):
+class FoodSerializer(serializers.HyperlinkedModelSerializer):
     # user = serializers.HyperlinkedRelatedField(
     #     view_name='user_detail',
     #     read_only=True
     # )
 
-    # performing_at = ArtistSerializer(many=True, read_only=True)
+    user = UsersSerializer(many=True, read_only=True)
 
     class Meta:
-        model = User
-        fields = ('user', 'food_name', 'image_url')
+        model = Food
+        fields = ('id','user', 'food_name', 'image_url','calories')
 
