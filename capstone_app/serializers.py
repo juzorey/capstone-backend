@@ -1,10 +1,18 @@
 from rest_framework import serializers
 from .models import User, Food
 
+
 class UsersSerializer(serializers.ModelSerializer):
+      
+    foods = serializers.HyperlinkedRelatedField(
+        view_name='food_details',
+        many=True,
+        read_only=True
+      )
+      
     class Meta:
         model = User
-        fields = ['id', 'name', 'email', 'password','weight']
+        fields = ['id', 'name', 'email', 'password','weight', 'foods']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -16,16 +24,22 @@ class UsersSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
-
+    
 class FoodSerializer(serializers.HyperlinkedModelSerializer):
     # user = serializers.HyperlinkedRelatedField(
     #     view_name='user_detail',
     #     read_only=True
     # )
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
-    user = UsersSerializer(many=True, read_only=True)
+    # user = UsersSerializer()
+    # user = serializers.HyperlinkedRelatedField(
+    #     view_name='user_detail',
+    #     lookup_field='id',
+    #     read_only=True
+    # )
 
     class Meta:
         model = Food
-        fields = ('id','user', 'food_name', 'image_url','calories')
+        fields = ('id','user','user_id', 'food_name', 'image_url','calories')
 

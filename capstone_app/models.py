@@ -20,14 +20,31 @@ class User(AbstractUser):
 #     name = models.CharField(max_length = 200)
 #     weight = models.IntegerField(default=0, null=True)
 
+
+# class FoodCtg(models.Model):
+#     name = models.CharField(max_length=50)
+
+#     def __str__(self):
+#         return self.name
+    
+# default drop down of 3 catg
 class Food(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Food',default = 6, blank = True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Food')
     food_name = models.CharField(max_length=100)
     image_url = models.TextField(null=True, blank = True)
+    # category = models.ForeignKey(FoodCtg, on_delete=models.CASCADE)
     calories = models.IntegerField(null=True, blank = True)
 
     def __str__(self):
         return self.name
+
+
+
+
+
+
+
+
 
 class Fitness(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Fitness', default = 0, blank = True)

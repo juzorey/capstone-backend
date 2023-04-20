@@ -32,23 +32,22 @@ class LoginView(APIView):
 
         if not user.check_password(password):
             raise AuthenticationFailed('Incorrect password!')
-        
+
         payload = {
             'id': user.id,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
             'iat': datetime.datetime.utcnow()
         }
 
-        token = jwt.encode(payload, 'secret', algorithms='HS256').decode('utf8')
+        token = jwt.encode(payload, 'secret', algorithm='HS256')
 
         response = Response()
 
-        response.set_cookie(key='jwt',value=token,httponly=True)
-        response.data={
-'jwt':token                }
-
+        response.set_cookie(key='jwt', value=token, httponly=True)
+        response.data = {
+            'jwt': token
+        }
         return response
-
 
 class UserView(APIView):
 
@@ -66,12 +65,36 @@ class UserView(APIView):
         user = User.objects.filter(id=payload['id']).first()
         serializer = UsersSerializer(user)
         return Response(serializer.data)
+    
+
 class LogoutView(APIView):
     def post(self, request):
         response = Response()
         response.delete_cookie('jwt')
         response.data={'message:logged out successfully'}
         return response
+
+
+class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UsersSerializer
+
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UsersSerializer
+    lookup_field = 'id'
+
+    def get_object(self):
+        user_id = self.kwargs.get('user_id')
+        user = User.objects.get(id=user_id)
+        return user
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, context={'request': request})
+        return Response(serializer.data)
+    
+
 
 
 class FoodList(generics.ListCreateAPIView):

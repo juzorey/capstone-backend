@@ -94,24 +94,29 @@ TEMPLATES = [
         },
     },
 ]
-CORS_ALLOWED_ORIGINS = [
-    "https://example.com",
-    "https://sub.example.com",
-    "http://localhost:8080",
-    "http://127.0.0.1:9000",
-    "http://localhost:3000",
-    "https://localhost:3000"
-]
-CORS_ALLOW_ALL_ORIGINS = True
-
-CORS_SUPPORTS_CREDENTIALS = True
-
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "https://localhost:3000"
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
+    'http://localhost:3000/login'
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000"
+    ]
+APPEND_SLASH=False
+
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_COOKIE_DOMAIN = 'localhost'
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+
+
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://localhost:3000",
+#     "https://localhost:3000"
+# ]
 
 WSGI_APPLICATION = "capstone.wsgi.application"
 
